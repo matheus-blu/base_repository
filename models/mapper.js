@@ -2,10 +2,10 @@ const fs = require('fs');
 const json2csv = require('json2csv').parse;
 
 
-const mapSchema = async(jsonPath) => {
+const mapSchema = async(json_path) => {
     const schema = {};
     // Sample data
-    const data = JSON.parse(fs.readFileSync(jsonPath));
+    const data = JSON.parse(fs.readFileSync(json_path));
 
     data.forEach(obj => {
         Object.keys(obj).forEach(key => {
@@ -16,12 +16,12 @@ const mapSchema = async(jsonPath) => {
             // If the value is an object, recursively map its schema
             if (typeof obj[key] === 'object' && obj[key] !== null && !Array.isArray(obj[key])) {
                 const subSchema = mapSchema([obj[key]]);
-                Object.keys(subSchema).forEach(subKey => {
-                    if (!schema[`${key}.${subKey}`]) {
-                        schema[`${key}.${subKey}`] = new Set();
+                Object.keys(subSchema).forEach(sub_key => {
+                    if (!schema[`${key}.${sub_key}`]) {
+                        schema[`${key}.${sub_key}`] = new Set();
                     }
-                    subSchema[subKey].forEach(value => {
-                        schema[`${key}.${subKey}`].add(value);
+                    subSchema[sub_key].forEach(value => {
+                        schema[`${key}.${sub_key}`].add(value);
                     });
                 });
             } else {
@@ -50,7 +50,7 @@ const mapSchema = async(jsonPath) => {
 
 const mapJsonArray = async() => {
     // Generate schema
-    const schema = mapSchema(jsonData);
+    const schema = mapSchema(json_data);
 
     // Write schema to a JSON file
     fs.writeFile('schema.json', JSON.stringify(schema, null, 2), err => {
@@ -61,10 +61,10 @@ const mapJsonArray = async() => {
         }
     });
 
-    const csvData = json2csv(schema);
+    const csv_data = json2csv(schema);
 
     // Write CSV data to file
-    fs.writeFile('schema.csv', csvData, err => {
+    fs.writeFile('schema.csv', csv_data, err => {
         if (err) {
             console.error('Error writing CSV file:', err);
         } else {
