@@ -2,10 +2,10 @@ const fs = require('fs');
 const json2csv = require('json2csv').parse;
 
 
-const mapSchema = async(json_path) => {
+const mapSchema = async(data) => {
     const schema = {};
     // Sample data
-    const data = JSON.parse(fs.readFileSync(json_path));
+    // const data = JSON.parse(fs.readFileSync(json_path));
 
     data.forEach(obj => {
         Object.keys(obj).forEach(key => {
@@ -48,9 +48,38 @@ const mapSchema = async(json_path) => {
     return schema;
 }
 
-const mapJsonArray = async() => {
+const convertToHSMapping = async (json_schema) => {
+    hs_mapping = [];
+    Object.keys(json_schema).forEach(key => {
+        hs_mapping.push({
+            "Origin System Field Name": key,
+            "Origin System Field Type": "",
+            "HubSpot Object": "",
+            "HubSpot Property Label": key,
+            "HubSpot Property Internal Name": key.toLocaleLowerCase().replace(" ", "_"),
+            "HubSpot Field Options": json_schema[key],
+            "HubSpot Field Type": "",
+            "HubSpot Type": "",
+            "Group name": "",
+            "Has Unique Value": "",
+            "Technical Notes": "",
+            "Property Status": "Pending"
+        })
+    })
+    const csv_data = json2csv(hs_mapping);
+    // Write CSV data to file
+    fs.writeFile('hs_mapping.csv', csv_data, err => {
+        if (err) {
+            console.error('Error writing CSV file:', err);
+        } else {
+            console.log('CSV file has been saved.');
+        }
+    });
+}
+
+const mapJsonArray = async(json_data) => {
     // Generate schema
-    const schema = mapSchema(json_data);
+    const schema = await mapSchema(json_data);
 
     // Write schema to a JSON file
     fs.writeFile('schema.json', JSON.stringify(schema, null, 2), err => {
@@ -71,6 +100,8 @@ const mapJsonArray = async() => {
             console.log('CSV file has been saved.');
         }
     });
+
+    await convertToHSMapping(schema);
 };
 
 module.exports = {
