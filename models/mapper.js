@@ -4,9 +4,7 @@ const json2csv = require('json2csv').parse;
 
 const mapSchema = async(data) => {
     const schema = {};
-    // Sample data
-    // const data = JSON.parse(fs.readFileSync(json_path));
-
+    
     data.forEach(obj => {
         Object.keys(obj).forEach(key => {
             if (!schema[key]) {
