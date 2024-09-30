@@ -46,6 +46,7 @@ const createRecord = async (object_id, properties, associations) => {
   return response.data;
 }
 
+// UPDATE RECORD
 const updateRecord = async (object_id, record_id, properties, associations) => {
   const config = {
     method: 'patch',
@@ -63,6 +64,7 @@ const updateRecord = async (object_id, record_id, properties, associations) => {
   return response.data;
 }
 
+// LOG NOTE
 const logNote = async (note_data, associations) => {
   const config = {
       method: 'post',
